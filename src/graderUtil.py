@@ -160,7 +160,7 @@ class GradedTestCase(unittest.TestCase):
 
   @property
   def elapsed(self):
-    return self.__elapsed__ if hasattr(self, '__elapsed__') else time.perf_counter()-self.starttime
+    return self.__elapsed__ if hasattr(self, '__elapsed__') else (time.perf_counter() - self.starttime if hasattr(self, 'starttime') else 0)
 
   @property
   def earned(self):
