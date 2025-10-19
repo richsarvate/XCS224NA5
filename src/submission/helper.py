@@ -74,7 +74,8 @@ def finetune(reading_params_path, finetune_corpus_path, pretrain_dataset, block_
                     lr_decay=True, warmup_tokens=512*20, final_tokens=200*len(pretrain_dataset)*block_size,
                     num_workers=0)
     
-    finetune_data = NameDataset(finetune_corpus_path,pretrain_dataset)
+    finetune_text = open(finetune_corpus_path, 'r').read() 
+    finetune_data = NameDataset(finetune_text,pretrain_dataset)
 
     trainer_obj = Trainer(model, finetune_data, None, tconf)
     ### END CODE HERE
