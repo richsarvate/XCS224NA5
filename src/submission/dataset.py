@@ -84,8 +84,8 @@ The __getitem__ function takes an index and returns a data point (x, y) where
 x and y are Long tensors of length self.block_size. x encodes the input
 sequence, and y encodes the output sequence.
 
-0. Use the idx argument of __getitem__ to retrieve the element of self.data
-at the given index. We'll call the resulting data entry a document.
+    0. Use the idx argument of __getitem__ to retrieve the element of self.data
+    at the given index. We'll call the resulting data entry a document.
 
 1. Randomly truncate the document to a length no less than 4 characters,
 and no more than int(self.block_size*3/4) characters.
@@ -176,6 +176,43 @@ class CharCorruptionDataset(Dataset):
         ### [part e]: see spec above
 
         ### START CODE HERE
+        #0. Use the idx argument of __getitem__ to retrieve the element of self.data
+        #at the given index. We'll call the resulting data entry a document.
+        document = self.data[idx]
+
+        #1. Randomly truncate the document to a length no less than 4 characters,
+        #and no more than int(self.block_size*3/4) characters.
+        truncated_size = random.randint(4, int(self.block_size*3/4))
+        document = document[:truncated_size]
+
+        #2. Now, break the (truncated) document into three substrings:
+        #.  [prefix] [masked_content] [suffix]
+        n = len(document)
+
+        mask_len = n//4 + random.randint(-n//16, n//16)
+        mask_start = random.randint(0, n - mask_len)
+
+        prefix = document[0:mask_start]
+        masked_content = document[mask_start:mask_start+mask_len]
+        suffix = document[mask_start+mask_len:]
+
+        #3. Rearrange these substrings into the following form:
+        #   [prefix] MASK_CHAR [suffix] MASK_CHAR [masked_content] MASK_CHAR [pads]
+        masked_string = prefix + self.MASK_CHAR + suffix + self.MASK_CHAR + masked_content + self.MASK_CHAR
+        masked_string = masked_string + self.PAD_CHAR*(self.block_size - len(masked_string))
+
+        #4. We now use masked_string to construct the input and output example pair. To
+        #do so, simply take the input string to be masked_string[:-1], and the output
+        #string to be masked_string[1:]
+        x = masked_string[:-1]
+        y = masked_string[1:]
+
+        #5. Making use of the vocabulary that you defined, encode the resulting input
+        #and output strings as Long tensors and return the resulting data point.
+        x = torch.tensor([self.stoi[c] for c in x], dtype=torch.long)
+        y = torch.tensor([self.stoi[c] for c in y], dtype=torch.long)
+        return (x, y)
+
         ### END CODE HERE
 
         raise NotImplementedError

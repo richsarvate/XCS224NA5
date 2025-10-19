@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug grader.py (file CWD)",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",                  
+      "args": ["1d-1-basic"],
+      "console": "integratedTerminal",
+      "cwd": "${fileDirname}",              
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src:${workspaceFolder}"
+      }
+    }
+  ]
+}
