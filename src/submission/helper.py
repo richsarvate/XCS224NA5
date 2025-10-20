@@ -22,6 +22,8 @@ def initialize_rope_model(mconf):
     ### [part h]: Make some other model here
 
     ### START CODE HERE
+    mconf.rope =True
+    attention_model = GPT(mconf)
     ### END CODE HERE
     return attention_model
 
